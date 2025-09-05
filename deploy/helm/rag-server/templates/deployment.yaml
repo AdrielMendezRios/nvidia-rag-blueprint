@@ -35,10 +35,18 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | nindent 8 }}
       {{- end }}
+      {{- if and .Values.podSecurityContext (eq .Values.platform.type "openshift") }}
+      securityContext:
+{{ toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Values.appName }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if and .Values.securityContext (eq .Values.platform.type "openshift") }}
+          securityContext:
+{{ toYaml .Values.securityContext | nindent 12 }}
+          {{- end }}
           command:
           - "uvicorn"
           - "nvidia_rag.rag_server.server:app"

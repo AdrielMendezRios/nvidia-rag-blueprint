@@ -1,0 +1,164 @@
+🚀 NVIDIA RAG Blueprint has been successfully deployed!
+
+Chart Version: {{ .Chart.Version }}
+App Version: {{ .Chart.AppVersion }}
+Release Name: {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+
+📋 DEPLOYMENT STATUS
+===================
+
+Your NVIDIA RAG Blueprint deployment includes:
+
+✅ RAG Server ({{ .Values.appName }})
+✅ Ingestor Server ({{ .Values.appName }}-ingestor-server)
+{{- if .Values.frontend.enabled }}
+✅ Frontend UI ({{ .Values.appName }}-frontend)
+{{- end }}
+{{- if index .Values "opentelemetry-collector" "enabled" }}
+✅ OpenTelemetry Collector (observability)
+{{- end }}
+{{- if .Values.zipkin.enabled }}
+✅ Zipkin Tracing UI
+{{- end }}
+
+🌐 ACCESS YOUR APPLICATION
+==========================
+
+1. **RAG Server API**:
+   {{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+   # For OpenShift - Check for auto-created routes:
+   oc get routes -n {{ .Release.Namespace }}
+   
+   # Or create port-forward:
+   oc port-forward service/{{ .Values.appName }} 8081:8081 -n {{ .Release.Namespace }}
+   {{- else }}
+   kubectl port-forward service/{{ .Values.appName }} 8081:8081 -n {{ .Release.Namespace }}
+   {{- end }}
+   API Base URL: http://localhost:8081/v1
+
+2. **Ingestor Server** (for document upload):
+   {{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+   oc port-forward service/{{ .Values.appName }}-ingestor-server 8082:8082 -n {{ .Release.Namespace }}
+   {{- else }}
+   kubectl port-forward service/{{ .Values.appName }}-ingestor-server 8082:8082 -n {{ .Release.Namespace }}
+   {{- end }}
+   API Base URL: http://localhost:8082/v1
+
+{{- if .Values.frontend.enabled }}
+3. **Frontend UI**:
+   {{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+   oc port-forward service/{{ .Values.appName }}-frontend 3000:3000 -n {{ .Release.Namespace }}
+   {{- else }}
+   kubectl port-forward service/{{ .Values.appName }}-frontend 3000:3000 -n {{ .Release.Namespace }}
+   {{- end }}
+   UI URL: http://localhost:3000
+{{- end }}
+
+{{- if .Values.zipkin.enabled }}
+4. **Zipkin Tracing UI**:
+   {{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+   oc port-forward service/{{ .Values.appName }}-zipkin 9411:9411 -n {{ .Release.Namespace }}
+   {{- else }}
+   kubectl port-forward service/{{ .Values.appName }}-zipkin 9411:9411 -n {{ .Release.Namespace }}
+   {{- end }}
+   Zipkin URL: http://localhost:9411
+{{- end }}
+
+🔍 VERIFY DEPLOYMENT
+====================
+
+Check that all pods are running:
+{{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+oc get pods -n {{ .Release.Namespace }}
+{{- else }}
+kubectl get pods -n {{ .Release.Namespace }}
+{{- end }}
+
+Test the health endpoints:
+curl http://localhost:8081/v1/health
+curl http://localhost:8082/v1/health
+
+🧪 RUNNING TESTS
+================
+
+Execute the deployment tests:
+{{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+oc test {{ .Release.Name }} -n {{ .Release.Namespace }}
+{{- else }}
+helm test {{ .Release.Name }} -n {{ .Release.Namespace }}
+{{- end }}
+
+📚 GETTING STARTED
+==================
+
+1. **Upload a document**:
+   curl -X POST "http://localhost:8082/v1/documents" \
+     -H "Content-Type: multipart/form-data" \
+     -F "file=@your-document.pdf"
+
+2. **Query the RAG system**:
+   curl -X POST "http://localhost:8081/v1/generate" \
+     -H "Content-Type: application/json" \
+     -d '{"query": "What is this document about?"}'
+
+3. **Use the Frontend UI**:
+   Navigate to http://localhost:3000 for an interactive experience
+
+⚠️  IMPORTANT NOTES
+===================
+
+{{- if not (or (index .Values "nim-llm" "enabled") (index .Values "nvidia-nim-llama-32-nv-embedqa-1b-v2" "enabled")) }}
+🔶 GPU NIMs are disabled - this is a CPU-only deployment
+   • Limited to basic RAG functionality
+   • Advanced features (VLM, guardrails, reranking) are disabled
+   • For full functionality, enable GPU NIMs in values.yaml
+{{- end }}
+
+{{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+🔶 OpenShift deployment detected
+   • Routes may have been created automatically
+   • Check: oc get routes -n {{ .Release.Namespace }}
+   • SCC permissions applied for enterprise security
+{{- end }}
+
+🔧 CONFIGURATION
+================
+
+Current configuration mode:
+{{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+• Platform: OpenShift
+{{- else }}
+• Platform: Kubernetes
+{{- end }}
+• Vector Database: {{ .Values.envVars.APP_VECTORSTORE_NAME | default "milvus" }}
+• LLM Model: {{ .Values.envVars.APP_LLM_MODELNAME | default "nvidia/llama-3.3-nemotron-super-49b-v1" }}
+• Reranker: {{ .Values.envVars.ENABLE_RERANKER | default "True" }}
+• Guardrails: {{ .Values.envVars.ENABLE_GUARDRAILS | default "False" }}
+
+📖 DOCUMENTATION
+================
+
+For detailed configuration and troubleshooting:
+• Chart documentation: See README.md in chart directory
+• API documentation: http://localhost:8081/docs (when port-forwarded)
+• NVIDIA RAG Blueprint docs: https://docs.nvidia.com/ai/
+
+🚨 TROUBLESHOOTING
+==================
+
+If pods are not starting:
+{{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+oc describe pod POD_NAME -n {{ .Release.Namespace }}
+oc logs POD_NAME -n {{ .Release.Namespace }}
+{{- else }}
+kubectl describe pod POD_NAME -n {{ .Release.Namespace }}
+kubectl logs POD_NAME -n {{ .Release.Namespace }}
+{{- end }}
+
+Common issues:
+• Image pull errors: Check NGC API key configuration
+• SCC violations (OpenShift): May need anyuid SCC for some components
+• Resource constraints: Verify cluster has sufficient CPU/memory
+
+Happy RAG building! 🎉

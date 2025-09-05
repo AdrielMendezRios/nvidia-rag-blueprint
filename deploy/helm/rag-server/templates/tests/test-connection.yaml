@@ -1,0 +1,193 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "nvidia-blueprint-rag.fullname" . }}-test"
+  labels:
+    {{- include "nvidia-blueprint-rag.labels" . | nindent 4 }}
+    component: test
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  restartPolicy: Never
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: rag-server-health-test
+      image: registry.access.redhat.com/ubi8/ubi:latest
+      command: ['sh', '-c']
+      args:
+        - |
+          echo "Testing NVIDIA RAG Blueprint deployment health..."
+          
+          # Test RAG Server health endpoint
+          echo "Testing RAG Server health endpoint..."
+          curl -f -s --max-time 30 "http://{{ .Values.appName }}:8081/v1/health" || {
+            echo "ERROR: RAG Server health check failed"
+            exit 1
+          }
+          echo "✓ RAG Server health check passed"
+          
+          # Test Ingestor Server health endpoint  
+          echo "Testing Ingestor Server health endpoint..."
+          curl -f -s --max-time 30 "http://{{ .Values.appName }}-ingestor-server:8082/v1/health" || {
+            echo "ERROR: Ingestor Server health check failed"  
+            exit 1
+          }
+          echo "✓ Ingestor Server health check passed"
+          
+          # Test Frontend service connectivity
+          echo "Testing Frontend service connectivity..."
+          curl -f -s --max-time 30 "http://{{ .Values.appName }}-frontend:3000/" > /dev/null || {
+            echo "ERROR: Frontend service connectivity failed"
+            exit 1  
+          }
+          echo "✓ Frontend service connectivity passed"
+          
+          # Test external infrastructure (MinIO)
+          echo "Testing MinIO connectivity..."
+          curl -f -s --max-time 30 "http://rag-minio:9000/minio/health/ready" || {
+            echo "ERROR: MinIO health check failed"
+            exit 1
+          }
+          echo "✓ MinIO health check passed"
+          
+          echo "All health checks passed successfully!"
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "100m"
+        requests:
+          memory: "64Mi"
+          cpu: "50m"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "nvidia-blueprint-rag.fullname" . }}-vector-db-test"
+  labels:
+    {{- include "nvidia-blueprint-rag.labels" . | nindent 4 }}
+    component: test
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-weight": "2"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  restartPolicy: Never
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: vector-db-connectivity-test
+      image: registry.access.redhat.com/ubi8/ubi:latest
+      command: ['sh', '-c']
+      args:
+        - |
+          echo "Testing Vector Database (Milvus) connectivity..."
+          
+          # Test Milvus health endpoint
+          echo "Testing Milvus health endpoint..."
+          curl -f -s --max-time 30 "http://milvus:19530/health" || {
+            echo "ERROR: Milvus health check failed"
+            exit 1
+          }
+          echo "✓ Milvus health check passed"
+          
+          # Test Redis connectivity (used by nv-ingest)
+          echo "Testing Redis connectivity..."
+          timeout 10 bash -c '</dev/tcp/rag-redis-master/6379' || {
+            echo "ERROR: Redis connectivity failed"
+            exit 1
+          }
+          echo "✓ Redis connectivity passed"
+          
+          echo "Vector database and message queue tests passed!"
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "100m"
+        requests:
+          memory: "64Mi"
+          cpu: "50m"
+---
+apiVersion: v1
+kind: Pod  
+metadata:
+  name: "{{ include "nvidia-blueprint-rag.fullname" . }}-observability-test"
+  labels:
+    {{- include "nvidia-blueprint-rag.labels" . | nindent 4 }}
+    component: test
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-weight": "3"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  restartPolicy: Never
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: observability-test
+      image: registry.access.redhat.com/ubi8/ubi:latest
+      command: ['sh', '-c']
+      args:
+        - |
+          echo "Testing Observability stack..."
+          
+          {{- if .Values.zipkin.enabled }}
+          # Test Zipkin UI
+          echo "Testing Zipkin UI..."
+          curl -f -s --max-time 30 "http://{{ .Values.appName }}-zipkin:9411/health" || {
+            echo "ERROR: Zipkin health check failed"
+            exit 1
+          }
+          echo "✓ Zipkin health check passed"
+          {{- end }}
+          
+          {{- if index .Values "opentelemetry-collector" "enabled" }}
+          # Test OpenTelemetry Collector
+          echo "Testing OpenTelemetry Collector..."
+          curl -f -s --max-time 30 "http://{{ .Values.appName }}-opentelemetry-collector:13133/" || {
+            echo "ERROR: OpenTelemetry Collector health check failed"
+            exit 1
+          }
+          echo "✓ OpenTelemetry Collector health check passed"
+          {{- end }}
+          
+          echo "Observability tests completed!"
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "100m"
+        requests:
+          memory: "64Mi"
+          cpu: "50m"

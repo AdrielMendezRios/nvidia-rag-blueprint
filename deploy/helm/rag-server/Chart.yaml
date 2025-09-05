@@ -41,3 +41,4 @@ description: An end to end Helm chart for the NVIDIA RAG Blueprint
 name: nvidia-blueprint-rag
 type: application
 version: v2.2.0
+kubeVersion: ">=1.20.0-0"

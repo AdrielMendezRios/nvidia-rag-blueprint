@@ -1,0 +1,67 @@
+{{- if and .Values.frontend.enabled (and .Values.frontend.route .Values.frontend.route.enabled) }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Values.frontend.service.name | default "rag-playground" }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.frontend.service.name | default "rag-playground" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: frontend
+spec:
+  {{- if .Values.frontend.route.host }}
+  host: {{ .Values.frontend.route.host }}
+  {{- end }}
+  to:
+    kind: Service
+    name: {{ .Values.frontend.service.name | default "rag-playground" }}
+    weight: 100
+  port:
+    targetPort: {{ .Values.frontend.service.targetPort | default 3000 }}
+  {{- if .Values.frontend.route.tls }}
+  tls:
+    termination: {{ .Values.frontend.route.tls.termination | default "edge" }}
+    {{- if .Values.frontend.route.tls.certificate }}
+    certificate: {{ .Values.frontend.route.tls.certificate }}
+    {{- end }}
+    {{- if .Values.frontend.route.tls.key }}
+    key: {{ .Values.frontend.route.tls.key }}
+    {{- end }}
+    {{- if .Values.frontend.route.tls.caCertificate }}
+    caCertificate: {{ .Values.frontend.route.tls.caCertificate }}
+    {{- end }}
+    {{- if .Values.frontend.route.tls.insecureEdgeTerminationPolicy }}
+    insecureEdgeTerminationPolicy: {{ .Values.frontend.route.tls.insecureEdgeTerminationPolicy }}
+    {{- end }}
+  {{- end }}
+  wildcardPolicy: None
+{{- end }}
+
+{{- if and .Values.appName (and .Values.platform (eq .Values.platform.type "openshift")) }}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Values.appName }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: rag-server
+spec:
+  to:
+    kind: Service
+    name: {{ .Values.appName }}
+    weight: 100
+  port:
+    targetPort: 8081
+  tls:
+    termination: edge
+  wildcardPolicy: None
+{{- end }}

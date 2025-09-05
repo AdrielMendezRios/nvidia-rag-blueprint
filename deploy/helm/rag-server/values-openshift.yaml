@@ -1,0 +1,368 @@
+# OpenShift-specific values for NVIDIA RAG Blueprint
+# This file overrides values.yaml for OpenShift deployment while preserving original resource names
+
+# Platform identification
+platform:
+  type: "openshift"
+
+# Keep original app name and namespace
+appName: rag-server
+namespace: "nv-nvidia-blueprint-rag"
+
+# OpenShift-compatible security contexts (no hardcoded UIDs)
+securityContext:
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
+
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# Reduced resource requirements for learning/dev environments
+resources:
+  limits:
+    memory: "8Gi"    # Reduced from 64Gi
+    cpu: "2"
+  requests:
+    memory: "2Gi"    # Reduced from 8Gi  
+    cpu: "500m"
+
+# CPU-only configurations (no GPU resources)
+envVars:
+  EXAMPLE_PATH: "./nvidia_rag/rag_server"
+  PROMPT_CONFIG_FILE: "/prompt.yaml"
+
+  ##===MINIO specific configurations===
+  MINIO_ENDPOINT: "rag-minio:9000"
+  MINIO_ACCESSKEY: "minioadmin"
+  MINIO_SECRETKEY: "minioadmin"
+
+  ##===Vector DB specific configurations===
+  APP_VECTORSTORE_URL: "http://milvus:19530"
+  APP_VECTORSTORE_NAME: "milvus"
+  APP_VECTORSTORE_SEARCHTYPE: "dense"
+  APP_VECTORSTORE_CONSISTENCYLEVEL: "Strong"
+  COLLECTION_NAME: "multimodal_data"
+  APP_RETRIEVER_SCORETHRESHOLD: "0.25"
+  VECTOR_DB_TOPK: "100"
+  APP_RETRIEVER_TOPK: "10"
+
+  # CPU-only vector database settings
+  APP_VECTORSTORE_ENABLEGPUINDEX: "False"
+  APP_VECTORSTORE_ENABLEGPUSEARCH: "False"
+
+  ##===LLM Model specific configurations===
+  APP_LLM_MODELNAME: "nvidia/llama-3.3-nemotron-super-49b-v1"
+  APP_LLM_SERVERURL: "nim-llm:8000"
+
+  ##===Query Rewriter Model specific configurations===
+  APP_QUERYREWRITER_MODELNAME: "meta/llama-3.1-8b-instruct"
+  APP_QUERYREWRITER_SERVERURL: "nim-llm-llama-8b:8000"
+
+  ##===Embedding Model specific configurations===
+  APP_EMBEDDINGS_SERVERURL: "nemoretriever-embedding-ms:8000"
+  APP_EMBEDDINGS_MODELNAME: "nvidia/llama-3.2-nv-embedqa-1b-v2"
+
+  ##===Reranking Model specific configurations===
+  APP_RANKING_SERVERURL: "nemoretriever-reranking-ms:8000"
+  APP_RANKING_MODELNAME: "nvidia/llama-3.2-nv-rerankqa-1b-v2"
+  ENABLE_RERANKER: "False"  # Disabled for CPU-only
+
+  # === Text Splitter ===
+  APP_TEXTSPLITTER_CHUNKSIZE: "2000"
+  APP_TEXTSPLITTER_CHUNKOVERLAP: "200"
+
+  # === General ===
+  ENABLE_CITATIONS: "True"
+  ENABLE_GUARDRAILS: "False"  # Disabled for CPU-only
+  LOGLEVEL: "INFO"
+  ENABLE_MULTITURN: "True"
+  ENABLE_QUERYREWRITER: "False"  # Disabled for CPU-only
+  ENABLE_REFLECTION: "False"     # Disabled for CPU-only
+  ENABLE_VLM_INFERENCE: "false"  # Disabled for CPU-only
+
+  # === Multi-Modal Settings ===
+  ENABLE_MULTIMODAL: "False"  # Disabled for CPU-only
+
+  # === Tracing Configuration ===
+  APP_TRACING_ENABLED: "True"
+  APP_TRACING_OTLPHTTPENDPOINT: "http://opentelemetry-collector:4318/v1/traces"
+  APP_TRACING_OTLPGRPCENDPOINT: "grpc://opentelemetry-collector:4317"
+
+  # === NeMo Guardrails ===
+  NEMO_GUARDRAILS_URL: "nemo-guardrails-microservice:7331"
+
+# Ingestor Server OpenShift Configuration
+ingestor-server:
+  enabled: true
+  replicaCount: 1
+  
+  # OpenShift-compatible security contexts
+  securityContext:
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    seccompProfile:
+      type: RuntimeDefault
+
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+
+  # Reduced resources
+  resources:
+    limits:
+      memory: "4Gi"    # Reduced from 25Gi
+      cpu: "1"
+    requests:
+      memory: "1Gi"    # Reduced from 25Gi
+      cpu: "250m"
+
+  envVars:
+    # === Vector Store Configurations ===
+    APP_VECTORSTORE_URL: "http://milvus:19530"
+    APP_VECTORSTORE_NAME: "milvus"
+    APP_VECTORSTORE_SEARCHTYPE: "dense"
+    APP_VECTORSTORE_ENABLEGPUINDEX: "False"  # CPU-only
+    APP_VECTORSTORE_ENABLEGPUSEARCH: "False" # CPU-only
+    COLLECTION_NAME: "multimodal_data"
+
+    # === MinIO Configurations ===
+    MINIO_ENDPOINT: "rag-minio:9000"
+    MINIO_ACCESSKEY: "minioadmin"
+    MINIO_SECRETKEY: "minioadmin"
+
+    # === Embeddings Configurations ===
+    APP_EMBEDDINGS_SERVERURL: "nemoretriever-embedding-ms:8000"
+    APP_EMBEDDINGS_MODELNAME: "nvidia/llama-3.2-nv-embedqa-1b-v2"
+    APP_EMBEDDINGS_DIMENSIONS: "2048"
+
+    # === NV-Ingest Configurations ===
+    APP_NVINGEST_MESSAGECLIENTHOSTNAME: "rag-nv-ingest"
+    APP_NVINGEST_MESSAGECLIENTPORT: "7670"
+
+    # === NV-Ingest extraction configurations (CPU-only) ===
+    APP_NVINGEST_PDFEXTRACTMETHOD: "None"  # Disabled for CPU-only
+    APP_NVINGEST_EXTRACTTEXT: "True"
+    APP_NVINGEST_EXTRACTINFOGRAPHICS: "False"  # Disabled for CPU-only
+    APP_NVINGEST_EXTRACTTABLES: "False"        # Disabled for CPU-only
+    APP_NVINGEST_EXTRACTCHARTS: "False"        # Disabled for CPU-only
+    APP_NVINGEST_EXTRACTIMAGES: "False"        # Disabled for CPU-only
+    APP_NVINGEST_TEXTDEPTH: "page"
+
+    # === NV-Ingest caption configurations ===
+    APP_NVINGEST_CAPTIONMODELNAME: "nvidia/llama-3.1-nemotron-nano-vl-8b-v1"
+    APP_NVINGEST_CAPTIONENDPOINTURL: ""
+
+    # === General ===
+    SUMMARY_LLM: "nvidia/llama-3.3-nemotron-super-49b-v1"
+    SUMMARY_LLM_SERVERURL: "nim-llm:8000"
+    SUMMARY_LLM_MAX_CHUNK_LENGTH: "50000"
+    SUMMARY_CHUNK_OVERLAP: "200"
+    ENABLE_CITATIONS: "True"
+    LOGLEVEL: "INFO"
+
+    # === NV-Ingest splitting configurations ===
+    APP_NVINGEST_CHUNKSIZE: "512"
+    APP_NVINGEST_CHUNKOVERLAP: "150"
+    APP_NVINGEST_ENABLEPDFSPLITTER: "True"
+
+    # === Redis configurations ===
+    REDIS_HOST: "rag-redis-master"
+    REDIS_PORT: "6379"
+    REDIS_DB: "0"
+
+    # === Bulk upload to MinIO ===
+    ENABLE_MINIO_BULK_UPLOAD: "True"
+    TEMP_DIR: "/tmp-data"
+
+    # === NV-Ingest Batch Mode Configurations ===
+    NV_INGEST_FILES_PER_BATCH: "16"
+    NV_INGEST_CONCURRENT_BATCHES: "4"
+
+  # NV-Ingest CPU-only configuration
+  nv-ingest:
+    resources:
+      limits:
+        nvidia.com/gpu: 0  # No GPU
+        memory: "4Gi"  # Increased for librosa installation
+        cpu: "1"
+      requests:
+        nvidia.com/gpu: 0  # No GPU
+        memory: "2Gi"  # Increased for librosa installation
+        cpu: "250m"
+
+    # Disable GPU-dependent services
+    paddleocr-nim:
+      deployed: false
+    nemoretriever-page-elements-v2:
+      deployed: false
+    nemoretriever-graphic-elements-v1:
+      deployed: false
+    nemoretriever-table-structure-v1:
+      deployed: false
+
+    # Enable CPU-only Milvus (authentic nv-ingest subchart configuration)
+    milvus:
+      enabled: true
+      fullnameOverride: "milvus"
+      image:
+        all:
+          repository: milvusdb/milvus
+          tag: "v2.5.3"  # CPU version (not v2.5.3-gpu)
+          pullPolicy: IfNotPresent
+      standalone:
+        resources:
+          limits:
+            nvidia.com/gpu: 0  # No GPU
+            memory: "2Gi"
+            cpu: "1"
+          requests:
+            nvidia.com/gpu: 0  # No GPU
+            memory: "1Gi"
+            cpu: "500m"
+      # Enable embedded etcd for standalone mode
+      etcd:
+        enabled: true
+        replicaCount: 1
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+
+# Disable GPU-dependent NIMs initially (can be enabled when GPU available)
+nim-llm:
+  enabled: false  # Start with external/cloud endpoints
+  
+nvidia-nim-llama-32-nv-embedqa-1b-v2:
+  enabled: false  # Start with external/cloud endpoints
+  
+text-reranking-nim:
+  enabled: false  # Disabled for CPU-only
+
+nim-vlm:
+  enabled: false  # Disabled for CPU-only
+
+# Enable observability stack (CPU-only)
+zipkin:
+  enabled: true
+  resources:
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+
+opentelemetry-collector:
+  enabled: true
+  mode: deployment
+  resources:
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: '${env:MY_POD_IP}:4317'
+          http:
+            cors:
+              allowed_origins:
+                - "http://localhost:8090"
+                - "http://localhost:3000"
+            endpoint: '${env:MY_POD_IP}:4318'
+    exporters:
+      debug:
+        verbosity: detailed
+      zipkin:
+        endpoint: "http://zipkin:9411/api/v2/spans"
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [debug, zipkin]
+  ports:
+    metrics:
+      enabled: true
+      containerPort: 8889
+      servicePort: 8889
+      protocol: TCP
+
+# Disable Prometheus stack for now (can be enabled later)
+kube-prometheus-stack:
+  enabled: false
+
+# Frontend configuration (preserve original naming)
+frontend:
+  enabled: true
+  
+  # OpenShift-compatible security contexts
+  securityContext:
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    seccompProfile:
+      type: RuntimeDefault
+
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+
+  resources:
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+
+  # OpenShift Route configuration (will be added in templates)
+  route:
+    enabled: true
+    host: ""  # Let OpenShift auto-generate
+    tls:
+      termination: "edge"
+
+  # Disable Kubernetes Ingress when using OpenShift Routes
+  ingress:
+    enabled: false
+
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+
+# OpenShift-specific configurations
+openshift:
+  # Security Context Constraints
+  securityContextConstraints:
+    enabled: true
+    sccName: "anyuid"  # May need to be applied manually
+
+  # Routes configuration
+  routes:
+    enabled: true
+    
+  # Disable Kubernetes-specific features
+  ingress:
+    enabled: false
