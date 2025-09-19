@@ -1,0 +1,16 @@
+{{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+# DEBUG CAPABILITIES: {{ printf "APIVersions: %v" .Capabilities.APIVersions }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: nvidia-blueprint-ocp
+rules:
+- apiGroups:
+  - security.openshift.io
+  resourceNames:
+  - anyuid
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - use
+{{- end }}

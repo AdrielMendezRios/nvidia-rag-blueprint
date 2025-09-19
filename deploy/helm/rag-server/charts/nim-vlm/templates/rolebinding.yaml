@@ -1,0 +1,17 @@
+{{- if and .Values.platform (eq .Values.platform.type "openshift") }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "nim-vlm.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{- include "nim-vlm.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: nvidia-blueprint-ocp
+subjects:
+- kind: ServiceAccount
+  name: {{ include "nim-vlm.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end }}

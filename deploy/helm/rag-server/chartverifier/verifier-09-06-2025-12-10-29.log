@@ -1,0 +1,114 @@
+name: Chart Verifier Log
+time: 09-06-2025-12-10-29
+log:
+    - Entry: '[INFO] [2025-September-6 12:10:29.768811250] : Chart Verifer 1.13.13.'
+    - Entry: '[INFO] [2025-September-6 12:10:29.768814150] : Verify : .'
+    - Entry: '[INFO] [2025-September-6 12:10:29.768816100] : Client timeout: 30m0s'
+    - Entry: '[INFO] [2025-September-6 12:10:29.768819575] : Helm Install timeout: 5m0s'
+    - Entry: '[INFO] [2025-September-6 12:10:29.770069301] : Profile in use: partner v1.3'
+    - Entry: '[INFO] [2025-September-6 12:10:29.995048464] : Check: has-notes:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:10:29.995072517] : Check: not-contain-csi-objects:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:10:29.995076604] : Check: signature-is-valid:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:10:29.995078799] : Start chart install and test check'
+    - Entry: '[INFO] [2025-September-6 12:10:29.996493245] : Execute helm install. namespace: cv-test, release: nvidia-blueprint-rag-sxvbopkv4j chart: /home/admendez/.cache/helm/repository/chart-verifier/_/nvidia-blueprint-rag'
+    - Entry: '[INFO] [2025-September-6 12:10:30.51665395] : Start install with timeout 5m0s'
+    - Entry: '[ERROR] [2025-September-6 12:10:32.872316930] : Error running chart install: create: failed to create: namespaces "cv-test" not found'
+    - Entry: '[INFO] [2025-September-6 12:10:32.872327887] : Execute helm uninstall. namespace: cv-test, release: nvidia-blueprint-rag-sxvbopkv4j'
+    - Entry: '[ERROR] [2025-September-6 12:10:32.911812744] : Error from helm uninstall : uninstall: Release not loaded: nvidia-blueprint-rag-sxvbopkv4j: release: not found'
+    - Entry: '[ERROR] [2025-September-6 12:10:32.911942655] : End chart install and test check with installAndTestChartRelease error: chart Install failure: create: failed to create: namespaces "cv-test" not found'
+    - Entry: '[INFO] [2025-September-6 12:10:32.911987462] : Check: chart-testing:v1.0 result : false'
+    - Entry: '[INFO] [2025-September-6 12:10:32.911993326] : Check: chart-testing:v1.0 reason : chart Install failure: create: failed to create: namespaces "cv-test" not found'
+    - Entry: '[INFO] [2025-September-6 12:10:32.912018994] : Check: contains-values-schema:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:10:32.912025927] : Check: contains-values:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:10:33.250984744] : Check: helm-lint:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:10:33.251016970] : Check: not-contains-crds:v1.0 result : false'
+    - Entry: '[INFO] [2025-September-6 12:10:33.251017950] : Check: not-contains-crds:v1.0 reason : Chart contains CRDs'
+    - Entry: '[INFO] [2025-September-6 12:10:33.251022867] : Check: required-annotations-present:v1.0 result : false'
+    - Entry: '[INFO] [2025-September-6 12:10:33.251023581] : Check: required-annotations-present:v1.0 reason : Missing required annotations: [charts.openshift.io/name]'
+    - Entry: '[INFO] [2025-September-6 12:10:33.251026475] : Check: contains-test:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:10:33.251057170] : Check: has-kubeversion:v1.1 result : true'
+    - Entry: '[INFO] [2025-September-6 12:10:33.251060733] : Check: has-readme:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:10:33.525653593] : Look for repository busybox at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:10:33.960704794] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:33.960732699] : repository not found: busybox'
+    - Entry: '[INFO] [2025-September-6 12:10:33.960746792] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/docker.io/repository/bitnami/redis/images, tag: 7.2.4-debian-12-r12, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:34.325951714] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:34.325980116] : No images found for Registry/Repository: docker.io/bitnami/redis'
+    - Entry: '[INFO] [2025-September-6 12:10:34.325993891] : Look for repository curlimages/curl at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:10:34.734672403] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:34.734699170] : repository not found: curlimages/curl'
+    - Entry: '[INFO] [2025-September-6 12:10:34.734717689] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/registry.access.redhat.com/repository/ubi8/ubi/images, tag: latest, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:36.346139136] : page: 0, page_size: 100, total: 428'
+    - Entry: '[INFO] [2025-September-6 12:10:36.346148517] : tag found: latest'
+    - Entry: '[INFO] [2025-September-6 12:10:36.346157133] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nim/nvidia/llama-3.3-nemotron-super-49b-v1/images, tag: 1.8.5, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:36.577665213] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:36.577691798] : No images found for Registry/Repository: nvcr.io/nim/nvidia/llama-3.3-nemotron-super-49b-v1'
+    - Entry: '[INFO] [2025-September-6 12:10:36.577710380] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nvidia/blueprint/rag-playground/images, tag: 2.2.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:36.830422344] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:36.830454448] : No images found for Registry/Repository: nvcr.io/nvidia/blueprint/rag-playground'
+    - Entry: '[INFO] [2025-September-6 12:10:36.830472612] : Look for repository minio/minio at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:10:37.147831011] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:37.147860359] : repository not found: minio/minio'
+    - Entry: '[INFO] [2025-September-6 12:10:37.147876796] : Look for repository milvusdb/milvus at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:10:37.602168302] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:37.602191209] : repository not found: milvusdb/milvus'
+    - Entry: '[INFO] [2025-September-6 12:10:37.602214335] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nim/nvidia/nemoretriever-page-elements-v2/images, tag: 1.3.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:38.18313065] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:38.18345391] : No images found for Registry/Repository: nvcr.io/nim/nvidia/nemoretriever-page-elements-v2'
+    - Entry: '[INFO] [2025-September-6 12:10:38.18361068] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nim/baidu/paddleocr/images, tag: 1.3.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:38.303708285] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:38.303733984] : No images found for Registry/Repository: nvcr.io/nim/baidu/paddleocr'
+    - Entry: '[INFO] [2025-September-6 12:10:38.303754490] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nvidia/blueprint/ingestor-server/images, tag: 2.2.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:38.731308287] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:38.731333166] : No images found for Registry/Repository: nvcr.io/nvidia/blueprint/ingestor-server'
+    - Entry: '[INFO] [2025-September-6 12:10:38.731353869] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nvidia/blueprint/rag-server/images, tag: 2.2.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:39.28225474] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:39.28250110] : No images found for Registry/Repository: nvcr.io/nvidia/blueprint/rag-server'
+    - Entry: '[INFO] [2025-September-6 12:10:39.28268616] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nvidia/nemo-microservices/nv-ingest/images, tag: 25.6.2, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:39.229685187] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:39.229714303] : No images found for Registry/Repository: nvcr.io/nvidia/nemo-microservices/nv-ingest'
+    - Entry: '[INFO] [2025-September-6 12:10:39.229727370] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nim/nvidia/llama-3.2-nv-embedqa-1b-v2/images, tag: 1.6.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:39.648883387] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:39.648908061] : No images found for Registry/Repository: nvcr.io/nim/nvidia/llama-3.2-nv-embedqa-1b-v2'
+    - Entry: '[INFO] [2025-September-6 12:10:39.648927186] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nim/nvidia/llama-3.2-nv-rerankqa-1b-v2/images, tag: 1.5.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:39.957567106] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:39.957591493] : No images found for Registry/Repository: nvcr.io/nim/nvidia/llama-3.2-nv-rerankqa-1b-v2'
+    - Entry: '[INFO] [2025-September-6 12:10:39.957610153] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/docker.io/repository/milvusdb/etcd/images, tag: 3.5.5-r2, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:40.254412738] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:40.254438176] : No images found for Registry/Repository: docker.io/milvusdb/etcd'
+    - Entry: '[INFO] [2025-September-6 12:10:40.254456344] : Look for repository milvusdb/milvus-config-tool at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:10:40.570388278] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:40.570411206] : repository not found: milvusdb/milvus-config-tool'
+    - Entry: '[INFO] [2025-September-6 12:10:40.570430680] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nim/nvidia/nemoretriever-graphic-elements-v1/images, tag: 1.3.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:40.878863118] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:40.878893160] : No images found for Registry/Repository: nvcr.io/nim/nvidia/nemoretriever-graphic-elements-v1'
+    - Entry: '[INFO] [2025-September-6 12:10:40.878912294] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nim/nvidia/nemoretriever-table-structure-v1/images, tag: 1.3.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:10:41.153968428] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:10:41.153993074] : No images found for Registry/Repository: nvcr.io/nim/nvidia/nemoretriever-table-structure-v1'
+    - Entry: '[INFO] [2025-September-6 12:10:41.154009398] : Check: images-are-certified:v1.1 result : false'
+    - Entry: |-
+        [INFO] [2025-September-6 12:10:41.154012263] : Check: images-are-certified:v1.1 reason : Image is not Red Hat certified : busybox : repository not found: busybox
+        Image is not Red Hat certified : busybox
+        Image is not Red Hat certified : docker.io/bitnami/redis:7.2.4-debian-12-r12
+        Image is not Red Hat certified : curlimages/curl:8.6.0 : repository not found: curlimages/curl
+        Image is not Red Hat certified : curlimages/curl:8.6.0
+        Image is Red Hat certified : registry.access.redhat.com/ubi8/ubi:latest
+        Image is not Red Hat certified : nvcr.io/nim/nvidia/llama-3.3-nemotron-super-49b-v1:1.8.5
+        Image is not Red Hat certified : nvcr.io/nvidia/blueprint/rag-playground:2.2.0
+        Image is not Red Hat certified : minio/minio:RELEASE.2023-03-20T20-16-18Z : repository not found: minio/minio
+        Image is not Red Hat certified : minio/minio:RELEASE.2023-03-20T20-16-18Z
+        Image is not Red Hat certified : milvusdb/milvus:v2.5.3-gpu : repository not found: milvusdb/milvus
+        Image is not Red Hat certified : milvusdb/milvus:v2.5.3-gpu
+        Image is not Red Hat certified : nvcr.io/nim/nvidia/nemoretriever-page-elements-v2:1.3.0
+        Image is not Red Hat certified : nvcr.io/nim/baidu/paddleocr:1.3.0
+        Image is not Red Hat certified : nvcr.io/nvidia/blueprint/ingestor-server:2.2.0
+        Image is not Red Hat certified : nvcr.io/nvidia/blueprint/rag-server:2.2.0
+        Image is not Red Hat certified : nvcr.io/nvidia/nemo-microservices/nv-ingest:25.6.2
+        Image is not Red Hat certified : nvcr.io/nim/nvidia/llama-3.2-nv-embedqa-1b-v2:1.6.0
+        Image is not Red Hat certified : nvcr.io/nim/nvidia/llama-3.2-nv-rerankqa-1b-v2:1.5.0
+        Image is not Red Hat certified : docker.io/milvusdb/etcd:3.5.5-r2
+        Image is not Red Hat certified : milvusdb/milvus-config-tool:v0.1.2 : repository not found: milvusdb/milvus-config-tool
+        Image is not Red Hat certified : milvusdb/milvus-config-tool:v0.1.2
+        Image is not Red Hat certified : nvcr.io/nim/nvidia/nemoretriever-graphic-elements-v1:1.3.0
+        Image is not Red Hat certified : nvcr.io/nim/nvidia/nemoretriever-table-structure-v1:1.3.0
+    - Entry: '[INFO] [2025-September-6 12:10:41.154064595] : Check: is-helm-v3:v1.0 result : true'

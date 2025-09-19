@@ -1,0 +1,35 @@
+╭───────────────────────────────────────────────────────────────╮
+│ ✻ Welcome to Claude Code!                                     │
+│                                                               │
+│   /help for help, /status for your current setup              │
+│                                                               │
+│   cwd: /home/admendez/projects/nvidia-rag-bp/rag/deploy/helm  │
+╰───────────────────────────────────────────────────────────────╯
+  ⎿  Read ../../CLAUDE.md (204 lines)
+  ⎿  Read rag-server/charts/ingestor-server/charts/nv-ingest/templates/deployment.yaml (195 lines)
+  ⎿  Read ../../../../../../../tmp/rendered-template.yaml (3077 lines)
+  ⎿  Read rag-server/values-openshift.yaml (394 lines)
+  ⎿  Read ../../../../../../../tmp/test-ownership.yaml (24 lines)
+  ⎿  Todo list read (11 items)
+
+
+● Previous query still processing. Please try again.
+
+
+● Previous query still processing. Please try again.
+
+
+● Previous query still processing. Please try again.
+
+
+● Previous query still processing. Please try again.
+
+
+● Previous query still processing. Please try again.
+
+
+● Previous query still processing. Please try again.
+
+
+● Previous query still processing. Please try again.
+

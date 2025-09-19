@@ -1,0 +1,5 @@
+2025/09/06 15:18:01 warning: skipped value for etcd.extraVolumes: Not a table.
+2025/09/06 15:18:01 warning: skipped value for etcd.extraVolumeMounts: Not a table.
+2025/09/06 15:18:01 warning: skipped value for etcd.extraVolumes: Not a table.
+2025/09/06 15:18:01 warning: skipped value for etcd.extraVolumeMounts: Not a table.
+I0906 15:18:05.458083 1157491 warnings.go:110] "Warning: spec.template.spec.containers[0].env[16]: hides previous definition of \"INGEST_LOG_LEVEL\", which may be dropped when using apply"

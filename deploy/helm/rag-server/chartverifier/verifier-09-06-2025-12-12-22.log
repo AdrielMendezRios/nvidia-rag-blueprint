@@ -1,0 +1,91 @@
+name: Chart Verifier Log
+time: 09-06-2025-12-12-22
+log:
+    - Entry: '[INFO] [2025-September-6 12:12:22.86266169] : Chart Verifer 1.13.13.'
+    - Entry: '[INFO] [2025-September-6 12:12:22.86269098] : Verify : .'
+    - Entry: '[INFO] [2025-September-6 12:12:22.86270750] : Client timeout: 30m0s'
+    - Entry: '[INFO] [2025-September-6 12:12:22.86271475] : Helm Install timeout: 5m0s'
+    - Entry: '[INFO] [2025-September-6 12:12:22.87712058] : Profile in use: partner v1.3'
+    - Entry: '[INFO] [2025-September-6 12:12:22.313524493] : Check: not-contains-crds:v1.0 result : false'
+    - Entry: '[INFO] [2025-September-6 12:12:22.313528602] : Check: not-contains-crds:v1.0 reason : Chart contains CRDs'
+    - Entry: '[INFO] [2025-September-6 12:12:22.313532861] : Check: signature-is-valid:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:12:22.313534621] : Start chart install and test check'
+    - Entry: '[INFO] [2025-September-6 12:12:22.315413141] : Execute helm install. namespace: cv-test, release: nvidia-blueprint-rag-p4si8d74x9 chart: /home/admendez/.cache/helm/repository/chart-verifier/_/nvidia-blueprint-rag'
+    - Entry: '[INFO] [2025-September-6 12:12:22.372600115] : Start install with timeout 5m0s'
+    - Entry: '[ERROR] [2025-September-6 12:12:25.550136407] : Error running chart install: Unable to continue with install: Route "rag-playground" in namespace "nv-nvidia-blueprint-rag" exists and cannot be imported into the current release: invalid ownership metadata; annotation validation error: key "meta.helm.sh/release-name" must equal "nvidia-blueprint-rag-p4si8d74x9": current value is "rag-server"; annotation validation error: key "meta.helm.sh/release-namespace" must equal "cv-test": current value is "nv-nvidia-blueprint-rag"'
+    - Entry: '[INFO] [2025-September-6 12:12:25.550145950] : Execute helm uninstall. namespace: cv-test, release: nvidia-blueprint-rag-p4si8d74x9'
+    - Entry: '[ERROR] [2025-September-6 12:12:25.592192360] : Error from helm uninstall : uninstall: Release not loaded: nvidia-blueprint-rag-p4si8d74x9: release: not found'
+    - Entry: '[ERROR] [2025-September-6 12:12:25.592403855] : End chart install and test check with installAndTestChartRelease error: chart Install failure: Unable to continue with install: Route "rag-playground" in namespace "nv-nvidia-blueprint-rag" exists and cannot be imported into the current release: invalid ownership metadata; annotation validation error: key "meta.helm.sh/release-name" must equal "nvidia-blueprint-rag-p4si8d74x9": current value is "rag-server"; annotation validation error: key "meta.helm.sh/release-namespace" must equal "cv-test": current value is "nv-nvidia-blueprint-rag"'
+    - Entry: '[INFO] [2025-September-6 12:12:25.592414498] : Check: chart-testing:v1.0 result : false'
+    - Entry: '[INFO] [2025-September-6 12:12:25.592416767] : Check: chart-testing:v1.0 reason : chart Install failure: Unable to continue with install: Route "rag-playground" in namespace "nv-nvidia-blueprint-rag" exists and cannot be imported into the current release: invalid ownership metadata; annotation validation error: key "meta.helm.sh/release-name" must equal "nvidia-blueprint-rag-p4si8d74x9": current value is "rag-server"; annotation validation error: key "meta.helm.sh/release-namespace" must equal "cv-test": current value is "nv-nvidia-blueprint-rag"'
+    - Entry: '[INFO] [2025-September-6 12:12:25.592440813] : Check: contains-values-schema:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:12:25.592453678] : Check: required-annotations-present:v1.0 result : false'
+    - Entry: '[INFO] [2025-September-6 12:12:25.592455176] : Check: required-annotations-present:v1.0 reason : Missing required annotations: [charts.openshift.io/name]'
+    - Entry: '[INFO] [2025-September-6 12:12:25.842925705] : Look for repository minio/minio at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:12:26.859699697] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:26.859719628] : repository not found: minio/minio'
+    - Entry: '[INFO] [2025-September-6 12:12:26.859729687] : Look for repository milvusdb/milvus-config-tool at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:12:27.458477292] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:27.458498516] : repository not found: milvusdb/milvus-config-tool'
+    - Entry: '[INFO] [2025-September-6 12:12:27.458512104] : Look for repository milvusdb/milvus at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:12:27.812888678] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:27.812908996] : repository not found: milvusdb/milvus'
+    - Entry: '[INFO] [2025-September-6 12:12:27.812920720] : Look for repository busybox at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:12:28.240387127] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:28.240406783] : repository not found: busybox'
+    - Entry: '[INFO] [2025-September-6 12:12:28.240423935] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nvidia/nemo-microservices/nv-ingest/images, tag: 25.6.2, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:12:28.788076485] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:28.788093344] : No images found for Registry/Repository: nvcr.io/nvidia/nemo-microservices/nv-ingest'
+    - Entry: '[INFO] [2025-September-6 12:12:28.788102544] : Look for repository otel/opentelemetry-collector-contrib at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:12:29.252251708] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:29.252271589] : repository not found: otel/opentelemetry-collector-contrib'
+    - Entry: '[INFO] [2025-September-6 12:12:29.252287893] : Look for repository openzipkin/zipkin-slim at https://catalog.redhat.com/api/containers/v1/repositories, page 0'
+    - Entry: '[INFO] [2025-September-6 12:12:29.526529057] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:29.526549600] : repository not found: openzipkin/zipkin-slim'
+    - Entry: '[INFO] [2025-September-6 12:12:29.526570871] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nvidia/blueprint/rag-server/images, tag: 2.2.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:12:29.884116958] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:29.884138748] : No images found for Registry/Repository: nvcr.io/nvidia/blueprint/rag-server'
+    - Entry: '[INFO] [2025-September-6 12:12:29.884154994] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nvidia/blueprint/rag-playground/images, tag: 2.2.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:12:30.183924405] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:30.183943549] : No images found for Registry/Repository: nvcr.io/nvidia/blueprint/rag-playground'
+    - Entry: '[INFO] [2025-September-6 12:12:30.183953021] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/nvcr.io/repository/nvidia/blueprint/ingestor-server/images, tag: 2.2.0, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:12:30.510179697] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:30.510200681] : No images found for Registry/Repository: nvcr.io/nvidia/blueprint/ingestor-server'
+    - Entry: '[INFO] [2025-September-6 12:12:30.510215026] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/docker.io/repository/milvusdb/etcd/images, tag: 3.5.5-r2, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:12:30.856896731] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:30.857038801] : No images found for Registry/Repository: docker.io/milvusdb/etcd'
+    - Entry: '[INFO] [2025-September-6 12:12:30.857061172] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/docker.io/repository/bitnami/redis/images, tag: 7.2.4-debian-12-r12, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:12:31.166415826] : page: 0, page_size: 100, total: 0'
+    - Entry: '[ERROR] [2025-September-6 12:12:31.166435421] : No images found for Registry/Repository: docker.io/bitnami/redis'
+    - Entry: '[INFO] [2025-September-6 12:12:31.166451319] : Search url: https://catalog.redhat.com/api/containers/v1/repositories/registry/registry.access.redhat.com/repository/ubi8/ubi/images, tag: latest, sha:  '
+    - Entry: '[INFO] [2025-September-6 12:12:32.866272960] : page: 0, page_size: 100, total: 428'
+    - Entry: '[INFO] [2025-September-6 12:12:32.866282055] : tag found: latest'
+    - Entry: '[INFO] [2025-September-6 12:12:32.866289085] : Check: images-are-certified:v1.1 result : false'
+    - Entry: |-
+        [INFO] [2025-September-6 12:12:32.866289921] : Check: images-are-certified:v1.1 reason : Image is not Red Hat certified : minio/minio:RELEASE.2023-03-20T20-16-18Z : repository not found: minio/minio
+        Image is not Red Hat certified : minio/minio:RELEASE.2023-03-20T20-16-18Z
+        Image is not Red Hat certified : milvusdb/milvus-config-tool:v0.1.2 : repository not found: milvusdb/milvus-config-tool
+        Image is not Red Hat certified : milvusdb/milvus-config-tool:v0.1.2
+        Image is not Red Hat certified : milvusdb/milvus:v2.5.3 : repository not found: milvusdb/milvus
+        Image is not Red Hat certified : milvusdb/milvus:v2.5.3
+        Image is not Red Hat certified : busybox : repository not found: busybox
+        Image is not Red Hat certified : busybox
+        Image is not Red Hat certified : nvcr.io/nvidia/nemo-microservices/nv-ingest:25.6.2
+        Image is not Red Hat certified : otel/opentelemetry-collector-contrib:0.92.0 : repository not found: otel/opentelemetry-collector-contrib
+        Image is not Red Hat certified : otel/opentelemetry-collector-contrib:0.92.0
+        Image is not Red Hat certified : openzipkin/zipkin-slim:3.0.3 : repository not found: openzipkin/zipkin-slim
+        Image is not Red Hat certified : openzipkin/zipkin-slim:3.0.3
+        Image is not Red Hat certified : nvcr.io/nvidia/blueprint/rag-server:2.2.0
+        Image is not Red Hat certified : nvcr.io/nvidia/blueprint/rag-playground:2.2.0
+        Image is not Red Hat certified : nvcr.io/nvidia/blueprint/ingestor-server:2.2.0
+        Image is not Red Hat certified : docker.io/milvusdb/etcd:3.5.5-r2
+        Image is not Red Hat certified : docker.io/bitnami/redis:7.2.4-debian-12-r12
+        Image is Red Hat certified : registry.access.redhat.com/ubi8/ubi:latest
+    - Entry: '[INFO] [2025-September-6 12:12:32.866323254] : Check: not-contain-csi-objects:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:12:32.866326748] : Check: contains-values:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:12:32.866363407] : Check: has-kubeversion:v1.1 result : true'
+    - Entry: '[INFO] [2025-September-6 12:12:32.866366294] : Check: has-readme:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:12:32.866368648] : Check: is-helm-v3:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:12:32.866370952] : Check: contains-test:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:12:32.866373982] : Check: has-notes:v1.0 result : true'
+    - Entry: '[INFO] [2025-September-6 12:12:33.189424612] : Check: helm-lint:v1.0 result : true'

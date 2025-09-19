@@ -1,0 +1,41 @@
+{{- if not (eq .Values.model.name "nvidia/nemoretriever-parse") }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "nim-vlm.fullname" . }}-test-ls-streaming-text-only-chat"
+  labels:
+    {{- include "nim-vlm.labels" . | nindent 4 }}
+    sidecar.istio.io/inject: "false"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:8.6.0
+      command: ['curl']
+      args:
+        - -X
+        - "POST"
+        - 'http://{{ .Values.service.name | default (include "nim-vlm.fullname" .) }}:{{ .Values.service.openai_port | default .Values.service.openaiPort }}/inference/chat_completion'
+        - -H
+        - 'accept: application/json'
+        - -H
+        - 'Content-Type: application/json'
+        - -f
+        - -d
+        - |
+            {
+              "model": "{{ .Values.model.name }}",
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a helpful assistant."
+                },
+                {
+                  "role": "user",
+                  "content": "Create a detailed itinerary for a week-long adventure trip through Southeast Asia."
+                }
+              ]
+            }
+  restartPolicy: Never
+{{- end }}

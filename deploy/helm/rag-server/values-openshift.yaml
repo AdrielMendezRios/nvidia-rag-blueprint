@@ -1,3 +1,4 @@
+# co-authored with Claude-code
 # OpenShift-specific values for NVIDIA RAG Blueprint
 # This file overrides values.yaml for OpenShift deployment while preserving original resource names
 
@@ -53,9 +54,9 @@ envVars:
   VECTOR_DB_TOPK: "100"
   APP_RETRIEVER_TOPK: "10"
 
-  # CPU-only vector database settings
-  APP_VECTORSTORE_ENABLEGPUINDEX: "False"
-  APP_VECTORSTORE_ENABLEGPUSEARCH: "False"
+  # vector database settings
+  APP_VECTORSTORE_ENABLEGPUINDEX: "True"
+  APP_VECTORSTORE_ENABLEGPUSEARCH: "True"
 
   ##===LLM Model specific configurations===
   APP_LLM_MODELNAME: "nvidia/llama-3.3-nemotron-super-49b-v1"
@@ -72,7 +73,7 @@ envVars:
   ##===Reranking Model specific configurations===
   APP_RANKING_SERVERURL: "nemoretriever-reranking-ms:8000"
   APP_RANKING_MODELNAME: "nvidia/llama-3.2-nv-rerankqa-1b-v2"
-  ENABLE_RERANKER: "False"  # Disabled for CPU-only
+  ENABLE_RERANKER: "True"  # Disabled for CPU-only
 
   # === Text Splitter ===
   APP_TEXTSPLITTER_CHUNKSIZE: "2000"
@@ -102,30 +103,13 @@ envVars:
 ingestor-server:
   enabled: true
   replicaCount: 1
-  
-  # OpenShift-compatible security contexts
-  securityContext:
-    runAsNonRoot: true
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    seccompProfile:
-      type: RuntimeDefault
-
-  podSecurityContext:
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
 
   # Reduced resources
   resources:
     limits:
-      memory: "4Gi"    # Reduced from 25Gi
-      cpu: "1"
+      memory: "10Gi"    
     requests:
-      memory: "1Gi"    # Reduced from 25Gi
-      cpu: "250m"
+      memory: "5Gi"    
 
   envVars:
     # === Vector Store Configurations ===
@@ -191,25 +175,90 @@ ingestor-server:
 
   # NV-Ingest CPU-only configuration
   nv-ingest:
+    platform:
+      type: "openshift"
+    podSecurityContext:
+      fsGroup: 1000
+    envVars:
+      CONDA_PKGS_DIRS: "/scratch/.cache/conda-pkgs"
+      MAMBA_PKGS_DIRS: "/scratch/.cache/conda-pkgs"
+      CONDA_BLD_PATH: "/scratch/.cache/conda-bld"
+      CONDA_ENVS_PATH: "/scratch/.conda/envs"
+      NV_INGEST_MAX_UTIL: "16"
+      MAX_INGEST_PROCESS_WORKERS: "8"
     resources:
       limits:
-        nvidia.com/gpu: 0  # No GPU
-        memory: "4Gi"  # Increased for librosa installation
-        cpu: "1"
+        memory: "200Gi"
+        cpu: "16"
       requests:
-        nvidia.com/gpu: 0  # No GPU
-        memory: "2Gi"  # Increased for librosa installation
-        cpu: "250m"
+        memory: "24Gi"
+        cpu: "8"
 
-    # Disable GPU-dependent services
     paddleocr-nim:
-      deployed: false
-    nemoretriever-page-elements-v2:
-      deployed: false
+      platform:
+        type: "openshift"
+      serviceAccount:
+        create: true
+      deployed: true
+      replicaCount: 1
+      image:
+        repository: nvcr.io/nim/baidu/paddleocr
+        tag: "1.3.0"
+      imagePullSecrets:
+      - name: ngc-secret
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+        requests:
+          nvidia.com/gpu: 1
+
     nemoretriever-graphic-elements-v1:
-      deployed: false
+      platform:
+        type: "openshift"
+      serviceAccount:
+        create: true
+      deployed: true
+      replicaCount: 1
+      image:
+        repository: nvcr.io/nim/nvidia/nemoretriever-graphic-elements-v1
+        tag: "1.3.0"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+        requests:
+          nvidia.com/gpu: 1
+
+    nemoretriever-page-elements-v2:
+      platform:
+        type: "openshift"
+      serviceAccount:
+        create: true
+      deployed: true
+      replicaCount: 1
+      image:
+        repository: nvcr.io/nim/nvidia/nemoretriever-page-elements-v2
+        tag: "1.3.0"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+        requests:
+          nvidia.com/gpu: 1
+
     nemoretriever-table-structure-v1:
-      deployed: false
+      platform:
+        type: "openshift"
+      serviceAccount:
+        create: true
+      deployed: true
+      replicaCount: 1
+      image:
+        repository: nvcr.io/nim/nvidia/nemoretriever-table-structure-v1
+        tag: "1.3.0"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+        requests:
+          nvidia.com/gpu: 1
 
     # Enable CPU-only Milvus (authentic nv-ingest subchart configuration)
     milvus:
@@ -218,22 +267,33 @@ ingestor-server:
       image:
         all:
           repository: milvusdb/milvus
-          tag: "v2.5.3"  # CPU version (not v2.5.3-gpu)
+          tag: "v2.5.3-gpu"  # CPU version (not v2.5.3-gpu)
           pullPolicy: IfNotPresent
       standalone:
         resources:
           limits:
-            nvidia.com/gpu: 0  # No GPU
+            nvidia.com/gpu: 1  
             memory: "2Gi"
             cpu: "1"
           requests:
-            nvidia.com/gpu: 0  # No GPU
+            nvidia.com/gpu: 1  
             memory: "1Gi"
             cpu: "500m"
+        extraEnv:
+          - name: ETCD_TIMEOUT
+            value: "30s"
+          - name: STARTUP_TIMEOUT
+            value: "60s"
+          - name: LOG_LEVEL
+            value: "error"
       # Enable embedded etcd for standalone mode
       etcd:
+        platform:
+          type: "openshift"
         enabled: true
         replicaCount: 1
+        serviceAccount:
+          create: true
         resources:
           limits:
             memory: "512Mi"
@@ -241,23 +301,73 @@ ingestor-server:
           requests:
             memory: "256Mi"
             cpu: "100m"
+      minio:
+        platform:
+          type: "openshift"
 
-# Disable GPU-dependent NIMs initially (can be enabled when GPU available)
 nim-llm:
-  enabled: false  # Start with external/cloud endpoints
-  
-nvidia-nim-llama-32-nv-embedqa-1b-v2:
-  enabled: false  # Start with external/cloud endpoints
-  
-text-reranking-nim:
-  enabled: false  # Disabled for CPU-only
+  platform:
+    type: "openshift"
+  enabled: false  
+  serviceAccount:
+    create: true
+  resources:
+    limits:
+      nvidia.com/gpu: 2
+      memory: "300Gi"
+      cpu: "32"
+    requests:
+      nvidia.com/gpu: 2
+      memory: "300Gi"
+      cpu: "16"
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 120
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 120
+    successThreshold: 1
+    httpGet:
+      path: /v1/health/ready
+      port: http-openai
+  env:
+    - name: QUANTIZATION
+      value: "fp16"
+  image:
+      repository: nvcr.io/nim/nvidia/nvidia-nemotron-nano-9b-v2
+      pullPolicy: IfNotPresent
+      tag: "latest"
+  model:
+    ngcAPIKey: ""
+    name: "nvidia/nvidia-nemotron-nano-9b-v2"
 
 nim-vlm:
-  enabled: false  # Disabled for CPU-only
+  platform:
+    type: "openshift"
+  enabled: false
+  serviceAccount:
+    create: true
 
-# Enable observability stack (CPU-only)
+nvidia-nim-llama-32-nv-embedqa-1b-v2:
+  platform:
+    type: "openshift"
+  enabled: true  
+  serviceAccount:
+    create: true
+  
+text-reranking-nim:
+  platform:
+    type: "openshift"
+  enabled: true  
+  serviceAccount:
+    create: true
+
 zipkin:
-  enabled: true
+  platform:
+    type: "openshift"
+  serviceAccount:
+    create: true
+  enabled: false
   resources:
     limits:
       memory: "512Mi"
@@ -267,7 +377,7 @@ zipkin:
       cpu: "100m"
 
 opentelemetry-collector:
-  enabled: true
+  enabled: false
   mode: deployment
   resources:
     limits:
@@ -335,6 +445,7 @@ frontend:
     requests:
       memory: "256Mi"
       cpu: "100m"
+  
 
   # OpenShift Route configuration (will be added in templates)
   route:
