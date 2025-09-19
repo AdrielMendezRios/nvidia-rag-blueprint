@@ -308,7 +308,7 @@ ingestor-server:
 nim-llm:
   platform:
     type: "openshift"
-  enabled: false  
+  enabled: true  
   serviceAccount:
     create: true
   resources:

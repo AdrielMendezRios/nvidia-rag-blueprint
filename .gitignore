@@ -7,6 +7,20 @@ dist/*
 # Helm Exclusions
 **/helm-charts/*.tgz
 **/charts-archive-backup
+deploy/helm/*.sh
+
+# Conversation logs and deployment analysis
+deploy/helm/*-convo.txt
+deploy/helm/*caveat*.txt
+*deployment-gist.md
+
+# Analysis and documentation files generated during development
+CHART-VERIFIER-*.md
+CRD-ANALYSIS.md
+CURRENT-STATE.md
+DEPLOYMENT-STRATEGY-*.md
+IMPLEMENTATION-CHECKLIST.md
+NVIDIA_RAG_Blueprint_*.md
 
 # Docker Compose exclusions
 deploy/compose/volumes
