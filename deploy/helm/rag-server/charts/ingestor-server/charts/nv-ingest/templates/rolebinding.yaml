@@ -1,10 +1,10 @@
-{{- if and (.Values.platform) (eq .Values.platform.type "openshift") }}
+{{- if and .Values.serviceAccount.create (.Capabilities.APIVersions.Has "security.openshift.io/v1") }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-    name: {{ include "nv-ingest.fullname" . }}-anyuid
-    labels:
-        {{- include "nv-ingest.labels" . | nindent 4}}
+  name: {{ include "nv-ingest.fullname" . }}-anyuid
+  labels:
+{{- include "nv-ingest.labels" . | nindent 4 }}
 roleRef:
     apiGroup: rbac.authorization.k8s.io
     kind: ClusterRole

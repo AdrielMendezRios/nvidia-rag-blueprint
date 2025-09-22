@@ -1,10 +1,6 @@
-{{- /*
-Author: rh-admendez
-*/}}
 {{- define "nim.common.v1.rolebinding" -}}
 ---
-{{- if and .Values.platform (eq .Values.platform.type "openshift") }}
-{{- if .Values.serviceAccount.create }}
+{{- if and .Values.serviceAccount.create (.Capabilities.APIVersions.Has "security.openshift.io/v1") }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -22,6 +18,5 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "nim.common.v1.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
-{{- end }}
 {{- end }}
 {{- end -}}

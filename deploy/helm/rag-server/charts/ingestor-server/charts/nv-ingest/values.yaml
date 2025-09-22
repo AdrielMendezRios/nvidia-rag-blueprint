@@ -44,10 +44,10 @@ podSecurityContext:
 
 
 ## @param extraVolumes [object] Adds arbitrary additional volumes to the deployment set definition
-extraVolumes: {}
+extraVolumes: []
 
 ## @param extraVolumeMounts [object] Specify volume mounts to the main container from `extraVolumes`
-extraVolumeMounts: {}
+extraVolumeMounts: []
 
 ## @section Image Pull Secrets
 ## @param imagePullSecrets[].name List of secret names needed for the main container and any init containers

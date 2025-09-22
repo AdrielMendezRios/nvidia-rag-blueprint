@@ -34,7 +34,6 @@ resources:
     memory: "2Gi"    # Reduced from 8Gi  
     cpu: "500m"
 
-# CPU-only configurations (no GPU resources)
 envVars:
   EXAMPLE_PATH: "./nvidia_rag/rag_server"
   PROMPT_CONFIG_FILE: "/prompt.yaml"
@@ -116,8 +115,8 @@ ingestor-server:
     APP_VECTORSTORE_URL: "http://milvus:19530"
     APP_VECTORSTORE_NAME: "milvus"
     APP_VECTORSTORE_SEARCHTYPE: "dense"
-    APP_VECTORSTORE_ENABLEGPUINDEX: "False"  # CPU-only
-    APP_VECTORSTORE_ENABLEGPUSEARCH: "False" # CPU-only
+    APP_VECTORSTORE_ENABLEGPUINDEX: "False"
+    APP_VECTORSTORE_ENABLEGPUSEARCH: "False"
     COLLECTION_NAME: "multimodal_data"
 
     # === MinIO Configurations ===
@@ -175,8 +174,6 @@ ingestor-server:
 
   # NV-Ingest CPU-only configuration
   nv-ingest:
-    platform:
-      type: "openshift"
     podSecurityContext:
       fsGroup: 1000
     envVars:
@@ -195,11 +192,9 @@ ingestor-server:
         cpu: "8"
 
     paddleocr-nim:
-      platform:
-        type: "openshift"
       serviceAccount:
-        create: true
-      deployed: true
+        create: true  
+      deployed: true  
       replicaCount: 1
       image:
         repository: nvcr.io/nim/baidu/paddleocr
@@ -213,11 +208,9 @@ ingestor-server:
           nvidia.com/gpu: 1
 
     nemoretriever-graphic-elements-v1:
-      platform:
-        type: "openshift"
       serviceAccount:
-        create: true
-      deployed: true
+        create: true 
+      deployed: true 
       replicaCount: 1
       image:
         repository: nvcr.io/nim/nvidia/nemoretriever-graphic-elements-v1
@@ -229,8 +222,6 @@ ingestor-server:
           nvidia.com/gpu: 1
 
     nemoretriever-page-elements-v2:
-      platform:
-        type: "openshift"
       serviceAccount:
         create: true
       deployed: true
@@ -245,8 +236,6 @@ ingestor-server:
           nvidia.com/gpu: 1
 
     nemoretriever-table-structure-v1:
-      platform:
-        type: "openshift"
       serviceAccount:
         create: true
       deployed: true
@@ -288,8 +277,6 @@ ingestor-server:
             value: "error"
       # Enable embedded etcd for standalone mode
       etcd:
-        platform:
-          type: "openshift"
         enabled: true
         replicaCount: 1
         serviceAccount:
@@ -301,16 +288,11 @@ ingestor-server:
           requests:
             memory: "256Mi"
             cpu: "100m"
-      minio:
-        platform:
-          type: "openshift"
 
 nim-llm:
-  platform:
-    type: "openshift"
-  enabled: true  
+  enabled: false  # <-- turn back on
   serviceAccount:
-    create: true
+    create: false # <-- turn back on
   resources:
     limits:
       nvidia.com/gpu: 2
@@ -342,29 +324,21 @@ nim-llm:
     name: "nvidia/nvidia-nemotron-nano-9b-v2"
 
 nim-vlm:
-  platform:
-    type: "openshift"
   enabled: false
   serviceAccount:
-    create: true
+    create: false
 
 nvidia-nim-llama-32-nv-embedqa-1b-v2:
-  platform:
-    type: "openshift"
   enabled: true  
   serviceAccount:
     create: true
   
 text-reranking-nim:
-  platform:
-    type: "openshift"
   enabled: true  
   serviceAccount:
     create: true
 
 zipkin:
-  platform:
-    type: "openshift"
   serviceAccount:
     create: true
   enabled: false
